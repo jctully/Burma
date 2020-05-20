@@ -102,6 +102,14 @@ public class Burma {
             }
         System.out.println(Arrays.toString(bestPositions));
 
+        //check if any -1s in array
+        for(int i=0; i<bestPositions.length; i++){
+            if(bestPositions[i] == -1){
+                System.out.println("No billboard configuration could be found");
+                return;
+            }
+        }
+
         int[] distArr = new int[numSigns];
         for(int i = 0; i< numSigns; i++){
             distArr[i] = positions[bestPositions[i]];
