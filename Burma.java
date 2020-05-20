@@ -45,11 +45,13 @@ public class Burma {
             nextBoard[i] = -1;
         }
 
+        //build nextBoard array
         for(int board = 0; board < n-1; board++){
             //System.out.println("board: " + board);
             int nextidx = board+1;
-            if(positions[nextidx] - positions[board] > maxInterval){
+            if(positions[nextidx] - positions[board] > maxInterval){ //no buildboard within maxInterval
                 //System.out.println("Problem " + positions[nextidx] + " " + positions[board]);
+                nextBoard[board] = -1;
                 break;
             }
             for(int idx = board+2; idx<n; idx++){
@@ -62,9 +64,9 @@ public class Burma {
             nextBoard[board] = nextidx;
             //System.out.println(Arrays.toString(nextBoard));
         }
+        System.out.println("nb: " + Arrays.toString(nextBoard));
 
-        //System.out.println(Arrays.toString(nextBoard));
-
+        //build array of total costs if billboards start at each index
         int[] totCosts = new int[n-numSigns+1];
         for(int i =0; i < totCosts.length; i++){
             totCosts[i] = cost[i];
@@ -80,41 +82,39 @@ public class Burma {
                 totCosts[startAt] += cost[nextBoardIdx];
             }
         }
-        //System.out.println(Arrays.toString(totCosts));
+        System.out.println("totCosts: " + Arrays.toString(totCosts));
         
         //find min, min index in totCosts
-        int minCost = totCosts[0];
         int bestStart = 0;
         for(int i = 1; i< totCosts.length; i++){
-            if(totCosts[i] < minCost){
-                minCost = totCosts[i];
+            if(totCosts[i] < totCosts[bestStart]){
                 bestStart = i;
             }
         }
+        if (totCosts[bestStart] == Integer.MAX_VALUE){
+            System.out.println("No possible solution. All billboard spaces > max interval");
+            return;
+        }
 
-        System.out.println("Min cost: " + minCost);
+        System.out.println("Min cost: " + totCosts[bestStart]);
         int[] bestPositions = new int[numSigns];
         bestPositions[0] = bestStart;
         int nextBoardIdx = bestStart;
             for(int i = 1; i< numSigns; i++){
                 nextBoardIdx = nextBoard[nextBoardIdx];
+                if(nextBoardIdx == -1){
+                    System.out.println("No billboard configuration could be found");
+                    return;
+                }
                 bestPositions[i] = nextBoardIdx;
             }
-        System.out.println(Arrays.toString(bestPositions));
-
-        //check if any -1s in array
-        for(int i=0; i<bestPositions.length; i++){
-            if(bestPositions[i] == -1){
-                System.out.println("No billboard configuration could be found");
-                return;
-            }
-        }
+        System.out.println("bestPos: " + Arrays.toString(bestPositions));
 
         int[] distArr = new int[numSigns];
         for(int i = 0; i< numSigns; i++){
             distArr[i] = positions[bestPositions[i]];
         }
-        System.out.println(Arrays.toString(distArr));
+        System.out.println("dist arr: " + Arrays.toString(distArr));
 
         return;
     }
