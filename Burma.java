@@ -48,10 +48,10 @@ public class Burma {
         for(int board = 0; board < n-1; board++){
             //System.out.println("board: " + board);
             int nextidx = board+1;
-            // if(positions[nextidx] - positions[board] > maxInterval){
-            //     System.out.println("Break because ran out of road");
-            //     break;
-            // }
+            if(positions[nextidx] - positions[board] > maxInterval){
+                //System.out.println("Problem " + positions[nextidx] + " " + positions[board]);
+                break;
+            }
             for(int idx = board+2; idx<n; idx++){
                 //System.out.println("checking cost at idx: " + idx + " " + cost[idx]);
                 if(positions[idx] - positions[board] > maxInterval)
@@ -59,10 +59,11 @@ public class Burma {
                 if(cost[idx] < cost[nextidx])
                     nextidx = idx;
             }
-            System.out.println(Arrays.toString(nextBoard));
+            nextBoard[board] = nextidx;
+            //System.out.println(Arrays.toString(nextBoard));
         }
 
-        System.out.println("nextboard: " + Arrays.toString(nextBoard));
+        //System.out.println(Arrays.toString(nextBoard));
 
         int[] totCosts = new int[n-numSigns+1];
         for(int i =0; i < totCosts.length; i++){
@@ -79,7 +80,7 @@ public class Burma {
                 totCosts[startAt] += cost[nextBoardIdx];
             }
         }
-        System.out.println("Costs: " + Arrays.toString(totCosts));
+        //System.out.println(Arrays.toString(totCosts));
         
         //find min, min index in totCosts
         int minCost = totCosts[0];
@@ -91,17 +92,16 @@ public class Burma {
             }
         }
 
+        System.out.println("Min cost: " + minCost);
         int[] bestPositions = new int[numSigns];
         bestPositions[0] = bestStart;
         int nextBoardIdx = bestStart;
-        for(int i = 1; i< numSigns; i++){
-            nextBoardIdx = nextBoard[nextBoardIdx];
-            bestPositions[i] = nextBoardIdx;
-        }
+            for(int i = 1; i< numSigns; i++){
+                nextBoardIdx = nextBoard[nextBoardIdx];
+                bestPositions[i] = nextBoardIdx;
+            }
+        System.out.println(Arrays.toString(bestPositions));
 
-
-        System.out.println("Min cost: " + minCost);
-        System.out.println("Best pos: " +Arrays.toString(bestPositions));
         int[] distArr = new int[numSigns];
         for(int i = 0; i< numSigns; i++){
             distArr[i] = positions[bestPositions[i]];
@@ -115,8 +115,6 @@ public class Burma {
     public static void main(String[] args){
         String file = args[0];
         int[] nums = parse(file);
-        //System.out.println(Arrays.toString(nums));
-
         //parse returned contents of file
         int numSigns = nums[0];
         int maxInterval = nums[1];
